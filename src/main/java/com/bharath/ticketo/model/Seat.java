@@ -22,7 +22,7 @@ public class Seat {
     private Long id;
 
     @Column(nullable = false)
-    private String seatNumber;
+    private Integer seatNumber;
 
     @Column(nullable = false)
     private Character rowNumber;

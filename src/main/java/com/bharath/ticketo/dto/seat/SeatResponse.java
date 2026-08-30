@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class SeatResponse {
     private Long id;
-    private String seatNumber;
+    private Integer seatNumber;
     private Character rowNumber;
     private SeatType seatType;
     private Double price;

@@ -110,6 +110,4 @@ public class GlobalExceptionHandler extends RuntimeException {
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-
-
 }

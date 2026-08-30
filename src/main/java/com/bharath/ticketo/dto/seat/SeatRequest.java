@@ -2,6 +2,7 @@ package com.bharath.ticketo.dto.seat;
 
 import com.bharath.ticketo.model.enums.SeatType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -9,18 +10,18 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class SeatRequest {
-    @NotBlank(message = "seat Number is required")
-    private String seatNumber;
+    @NotNull(message = "seat Number is required")
+    private Integer seatNumber;
 
-    @NotBlank(message = "row Number is required")
+    @NotNull(message = "row Number is required")
     private Character rowNumber;
 
     @NotBlank(message = "seat type is required")
     private SeatType seatType;
 
-    @NotBlank(message = "price is required")
+    @NotNull(message = "price is required")
     private Double price;
 
-    @NotBlank(message = "screen ID is required")
+    @NotNull(message = "screen ID is required")
     private Long screenId;
 }

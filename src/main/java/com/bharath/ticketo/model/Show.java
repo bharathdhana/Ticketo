@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -29,9 +28,6 @@ public class Show {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "screen_id", nullable = false)
     private Screen screen;
-
-    @Column(nullable = false)
-    private Date showDate;
 
     @Column(nullable = false)
     private LocalDateTime startTime;

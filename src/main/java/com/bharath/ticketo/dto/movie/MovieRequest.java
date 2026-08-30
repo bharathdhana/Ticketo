@@ -3,6 +3,7 @@ package com.bharath.ticketo.dto.movie;
 import com.bharath.ticketo.model.enums.MovieStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class MovieRequest {
     @NotBlank(message = "description is required")
     private String description;
 
-    @NotBlank(message = "duration is required")
+    @NotNull(message = "duration is required")
     @Min(1)
     private Integer duration;
 
@@ -35,7 +36,7 @@ public class MovieRequest {
     @NotBlank(message = "release date is required")
     private LocalDate releaseDate;
 
-    @NotBlank(message = "rating is required")
+    @NotNull(message = "rating is required")
     private Double rating;
 
     @NotBlank(message = "status is required")

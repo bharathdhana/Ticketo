@@ -1,6 +1,7 @@
 package com.bharath.ticketo.dto.reservation;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,9 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ReservationRequest {
-    @NotBlank(message = "show ID is required")
+    @NotNull(message = "show ID is required")
     private Long showId;
 
-    @NotBlank(message = "seat ID is required")
-    private List<Long> seatIds;
+    @NotNull(message = "Seat IDs are required")
+    @Size(min = 1, message = "At least one seat ID is required")
+    private List<@NotNull Long> seatIds;
 }
