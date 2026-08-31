@@ -1,8 +1,11 @@
 package com.bharath.ticketo.dto.auth;
 
 import com.bharath.ticketo.model.enums.UserRole;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +29,7 @@ public class RegisterRequest {
     @NotBlank(message = "phone number is required")
     private String phone;
 
-    @NotBlank(message = "role is required")
+    @NotNull(message = "role is required")
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 }
