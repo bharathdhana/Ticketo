@@ -31,7 +31,7 @@ public class GlobalExceptionHandler extends RuntimeException {
                 .error("Resource Not Found Error")
                 .message(e.getMessage())
                 .build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UnAuthorizedException.class)

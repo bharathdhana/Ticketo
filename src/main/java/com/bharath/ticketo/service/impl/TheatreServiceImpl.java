@@ -56,7 +56,7 @@ public class TheatreServiceImpl implements TheatreService {
         if(request.getLocation() == null || request.getLocation().isEmpty())
             throw new IllegalArgumentException("Theatre location is required");
 
-        boolean duplicate = theatreRepository.existsByNameAndLocationAndIdNot(theatre.getName(), request.getLocation(), theatreId);
+        boolean duplicate = theatreRepository.existsByNameAndLocationAndIdNot(request.getName(), request.getLocation(), theatreId);
         if(duplicate)
             throw new ResourceNotFoundException("Theatre already exists");
 
@@ -85,10 +85,8 @@ public class TheatreServiceImpl implements TheatreService {
     }
 
     @Override
-    public TheatreResponse getTheatreByName(String name) {
-        Theatre theatre = theatreRepository.findByName(name)
-                .orElseThrow(() ->  new  ResourceNotFoundException("Theatre not found"));
-        return mapToTheatreResponse(theatre);
+    public List<TheatreResponse> getTheatreByName(String name) {
+       return theatreRepository.findByNameContainingIgnoreCase(name).stream().map(this::mapToTheatreResponse).toList();
     }
 
     @Override
@@ -98,6 +96,7 @@ public class TheatreServiceImpl implements TheatreService {
 
     private TheatreResponse mapToTheatreResponse(Theatre theatre) {
         return TheatreResponse.builder()
+                .id(theatre.getId())
                 .name(theatre.getName())
                 .location(theatre.getLocation())
                 .city(theatre.getCity())
