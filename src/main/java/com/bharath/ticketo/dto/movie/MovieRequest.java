@@ -1,6 +1,8 @@
 package com.bharath.ticketo.dto.movie;
 
 import com.bharath.ticketo.model.enums.MovieStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -24,7 +25,7 @@ public class MovieRequest {
     private String description;
 
     @NotNull(message = "duration is required")
-    @Min(1)
+    @Min(value = 1, message = "duration must be greater than 0")
     private Integer duration;
 
     @NotBlank(message = "language is required")
@@ -33,14 +34,15 @@ public class MovieRequest {
     @NotBlank(message = "genre is required")
     private String genre;
 
-    @NotBlank(message = "release date is required")
+    @NotNull(message = "release date is required")
     private LocalDate releaseDate;
 
     @NotNull(message = "rating is required")
     private Double rating;
 
-    @NotBlank(message = "status is required")
+    @NotNull(message = "status is required")
+    @Enumerated(EnumType.STRING)
     private MovieStatus status;
 
-    private MultipartFile posterUrl;
+    private String posterUrl;
 }

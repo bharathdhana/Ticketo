@@ -12,7 +12,6 @@ import com.bharath.ticketo.service.MovieService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,14 +26,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public MovieResponse addMovie(MovieRequest request, MultipartFile poster) throws IOException {
+    public MovieResponse addMovie(MovieRequest request) {
         if(movieRepository.existsByTitle(request.getTitle()))
             throw new InvalidBookingException("Movie already exists!");
-
-        if(poster == null || poster.isEmpty())
-            throw new InvalidBookingException("Movie poster is Required!");
-
-        String posterUrl = cloudinaryService.uploadImage(poster);
 
         Movie savedMovie = Movie.builder()
                 .title(request.getTitle())
@@ -45,7 +39,7 @@ public class MovieServiceImpl implements MovieService {
                 .releaseDate(request.getReleaseDate())
                 .rating(request.getRating())
                 .status(request.getStatus())
-                .posterUrl(posterUrl)
+                .posterUrl(request.getPosterUrl())
                 .build();
         movieRepository.save(savedMovie);
         return mapToMovieResponse(savedMovie);
@@ -53,7 +47,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public MovieResponse updateMovie(MovieRequest request, Long id, MultipartFile poster) throws IOException {
+    public MovieResponse updateMovie(MovieRequest request, Long id, String poster) throws IOException {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie Not Found!"));
 
@@ -112,6 +106,7 @@ public class MovieServiceImpl implements MovieService {
 
     private MovieResponse mapToMovieResponse(Movie movie) {
         return MovieResponse.builder()
+                .id(movie.getId())
                 .title(movie.getTitle())
                 .description(movie.getDescription())
                 .duration(movie.getDuration())
