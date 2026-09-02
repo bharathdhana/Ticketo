@@ -3,6 +3,7 @@ package com.bharath.ticketo.dto.seat;
 import com.bharath.ticketo.model.enums.SeatType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -11,8 +12,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class SeatRequest {
-    @NotNull(message = "seat Number is required")
-    private Integer seatNumber;
+    @NotBlank(message = "seat Number is required")
+    private String seatNumber;
 
     @NotNull(message = "row Number is required")
     private Character rowNumber;

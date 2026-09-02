@@ -25,11 +25,11 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     @Transactional
-    public SeatResponse createSeat(Long screenId, SeatRequest request) {
-        Screen screen = screenRepository.findById(screenId)
+    public SeatResponse createSeat(SeatRequest request) {
+        Screen screen = screenRepository.findById(request.getScreenId())
                 .orElseThrow(() -> new ResourceNotFoundException("Screen not found"));
 
-        if(seatRepository.existsBySeatNumberAndScreenId(screenId, request.getScreenId()))
+        if(seatRepository.existsBySeatNumberAndScreen_Id(request.getSeatNumber(), request.getScreenId()))
             throw new RuntimeException("Seat already exists in theatre");
 
         Seat seat = Seat.builder()
@@ -47,7 +47,12 @@ public class SeatServiceImpl implements SeatService {
     public List<SeatResponse> getSeatsByScreen(Long screenId) {
         if(!screenRepository.existsById(screenId))
             throw new ResourceNotFoundException("Screen not found");
-        return seatRepository.findByScreenId(screenId).stream().map(this::mapToSeatResponse).toList();
+        return seatRepository.findByScreen_Id(screenId).stream().map(this::mapToSeatResponse).toList();
+    }
+
+    @Override
+    public List<SeatResponse> getAllSeats() {
+        return seatRepository.findAll().stream().map(this::mapToSeatResponse).toList();
     }
 
     @Override
@@ -62,11 +67,19 @@ public class SeatServiceImpl implements SeatService {
     public SeatResponse updateSeat(Long seatId, SeatRequest request) {
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found"));
-        if(seatRepository.existsBySeatNumberAndScreenIdAndIdNot(seatId, request.getScreenId(), seatId))
+
+        if(seatRepository.existsBySeatNumberAndScreen_IdAndIdNot(request.getSeatNumber(), request.getScreenId(), seatId))
             throw new RuntimeException("Seat already exists in theatre");
+
+        Screen screen = screenRepository.findById(request.getScreenId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Screen not found"));
 
         seat.setSeatNumber(request.getSeatNumber());
         seat.setRowNumber(request.getRowNumber());
+        seat.setSeatType(request.getSeatType());
+        seat.setPrice(request.getPrice());
+        seat.setScreen(screen);
+
         Seat updatedSeat = seatRepository.save(seat);
         return mapToSeatResponse(updatedSeat);
     }
@@ -86,6 +99,7 @@ public class SeatServiceImpl implements SeatService {
 
     private SeatResponse mapToSeatResponse(Seat seat) {
         return SeatResponse.builder()
+                .id(seat.getId())
                 .seatNumber(seat.getSeatNumber())
                 .rowNumber(seat.getRowNumber())
                 .seatType(seat.getSeatType())
