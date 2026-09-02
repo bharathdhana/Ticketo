@@ -73,13 +73,11 @@ public class TheatreServiceImpl implements TheatreService {
     public String deleteTheatre(Long theatreId) {
         Theatre theatre =  theatreRepository.findById(theatreId)
                 .orElseThrow(() -> new  ResourceNotFoundException("Theatre not found"));
-        boolean hasScreens = screenRepository.existsByTheatreId(theatreId);
+        boolean hasScreens = screenRepository.existsByTheatre_Id(theatreId);
         if(hasScreens) {
             theatre.setStatus(TheatreStatus.INACTIVE);
-            theatreRepository.save(theatre);
             return "Theatre Disabled because screens are associated with it";
         }
-
         theatreRepository.delete(theatre);
         return "Theatre Deleted Successfully";
     }

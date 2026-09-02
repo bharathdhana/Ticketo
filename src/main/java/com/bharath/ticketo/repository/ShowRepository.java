@@ -11,13 +11,13 @@ import java.util.List;
 
 @Repository
 public interface ShowRepository extends JpaRepository<Show, Long> {
-    List<Show> findByMovieId(Long movieId);
+    List<Show> findByMovie_Id(Long movieId);
 
-    List<Show> findByScreenTheatreId(Long theatreId);
+    List<Show> findByScreenTheatre_Id(Long theatreId);
 
-    boolean existsByMovieId(Long movieId);
+    boolean existsByMovie_Id(Long movieId);
 
-    boolean existsByScreenId(Long id);
+    boolean existsByScreen_Id(Long id);
 
     List<Show> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 

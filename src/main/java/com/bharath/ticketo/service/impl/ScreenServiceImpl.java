@@ -25,11 +25,11 @@ public class ScreenServiceImpl implements ScreenService {
 
     @Override
     @Transactional
-    public ScreenResponse createScreen(Long theatreId, ScreenRequest request) {
-        Theatre theatre = theatreRepository.findById(theatreId)
+    public ScreenResponse createScreen(ScreenRequest request) {
+        Theatre theatre = theatreRepository.findById(request.getTheatreId())
                 .orElseThrow(() -> new ResourceNotFoundException("theatre not found"));
 
-        if(screenRepository.existsByScreenNumberAndTheatreId(request.getScreenNumber(), theatreId))
+        if(screenRepository.existsByScreenNumberAndTheatre_Id(request.getScreenNumber(), request.getTheatreId()))
             throw new RuntimeException("Screen already exists in this theatre");
 
         Screen screen = Screen.builder()
@@ -49,8 +49,8 @@ public class ScreenServiceImpl implements ScreenService {
     }
 
     @Override
-    public List<ScreenResponse> getScreensByTheater(Long id) {
-        return screenRepository.findById(id).stream().map(this::mapToScreenResponse).toList();
+    public List<ScreenResponse> getScreensByTheater(Long theatreId) {
+        return screenRepository.findByTheatre_Id(theatreId).stream().map(this::mapToScreenResponse).toList();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ScreenServiceImpl implements ScreenService {
                 .orElseThrow(() -> new ResourceNotFoundException("Screen not found"));
 
         Long theatreId = request.getTheatreId();
-        if(screenRepository.existsByScreenNumberAndTheatreIdAndIdNot(request.getScreenNumber(), id, theatreId))
+        if(screenRepository.existsByScreenNumberAndTheatre_IdAndIdNot(request.getScreenNumber(), id, theatreId))
             throw new RuntimeException("Screen already exists in this theatre");
 
         screen.setScreenNumber(request.getScreenNumber());
@@ -74,7 +74,7 @@ public class ScreenServiceImpl implements ScreenService {
     public String deleteScreen(Long id) {
         Screen screen = screenRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Screen not found"));
-        boolean hasShows = showRepository.existsByScreenId(id);
+        boolean hasShows = showRepository.existsByScreen_Id(id);
         if(hasShows) {
             return "Screen Cannot be deleted, shows are associated with it";
         }
@@ -84,6 +84,7 @@ public class ScreenServiceImpl implements ScreenService {
 
     private ScreenResponse mapToScreenResponse(Screen screen) {
         return ScreenResponse.builder()
+                .id(screen.getId())
                 .screenNumber(screen.getScreenNumber())
                 .capacity(screen.getCapacity())
                 .theatreId(screen.getTheatre().getId())

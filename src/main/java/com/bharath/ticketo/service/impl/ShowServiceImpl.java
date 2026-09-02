@@ -66,7 +66,7 @@ public class ShowServiceImpl implements ShowService {
     }
 
     @Override
-    public ShowResponse findShowById(long id) {
+    public ShowResponse findShowById(Long id) {
         Show show = showRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Show Not Found"));
         return mapToShowResponse(show);
@@ -81,14 +81,14 @@ public class ShowServiceImpl implements ShowService {
     public List<ShowResponse> getShowByMovie(Long movieId) {
         if(!movieRepository.existsById(movieId))
             throw new ResourceNotFoundException("Movie Not Found");
-        return showRepository.findByMovieId(movieId).stream().map(this::mapToShowResponse).toList();
+        return showRepository.findByMovie_Id(movieId).stream().map(this::mapToShowResponse).toList();
     }
 
     @Override
     public List<ShowResponse> getShowByTheatre(Long theatreId) {
         if(!theatreRepository.existsById(theatreId))
             throw new ResourceNotFoundException("Theatre Not Found");
-        return showRepository.findByScreenTheatreId(theatreId).stream().map(this::mapToShowResponse).toList();
+        return showRepository.findByScreenTheatre_Id(theatreId).stream().map(this::mapToShowResponse).toList();
     }
 
     @Override
@@ -134,6 +134,7 @@ public class ShowServiceImpl implements ShowService {
         show.setStartTime(request.getStartTime());
         show.setEndTime(request.getEndTime());
         show.setTicketPrice(request.getTicketPrice());
+        show.setStatus(request.getStatus());
         Show updateShow = showRepository.save(show);
         return mapToShowResponse(updateShow);
     }
@@ -152,6 +153,7 @@ public class ShowServiceImpl implements ShowService {
 
     private ShowResponse mapToShowResponse(Show show) {
         return ShowResponse.builder()
+                .id(show.getId())
                 .movieId(show.getMovie().getId())
                 .screenId(show.getScreen().getId())
                 .startTime(show.getStartTime())

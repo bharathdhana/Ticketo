@@ -1,7 +1,8 @@
 package com.bharath.ticketo.dto.show;
 
 import com.bharath.ticketo.model.enums.ShowStatus;
-import jakarta.validation.constraints.AssertTrue;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -29,10 +30,7 @@ public class ShowRequest {
     @Positive(message = "Ticket price should be greater than zero")
     private Double ticketPrice;
 
+    @Enumerated(EnumType.STRING)
     private ShowStatus status;
 
-    @AssertTrue(message = "End time must be after start time")
-    public boolean isEndTimeValid() {
-        return endTime == null || startTime == null || endTime.isAfter(startTime);
-    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ShowService {
     ShowResponse createShow(ShowRequest request);
-    ShowResponse findShowById(long id);
+    ShowResponse findShowById(Long id);
     List<ShowResponse> findAllShows();
     List<ShowResponse> getShowByMovie(Long movieId);
     List<ShowResponse> getShowByTheatre(Long theatreId);

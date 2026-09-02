@@ -91,7 +91,7 @@ public class MovieServiceImpl implements MovieService {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie Not Found!"));
 
-        if(showRepository.existsByMovieId(id)) {
+        if(showRepository.existsByMovie_Id(id)) {
             throw new InvalidBookingException("Cannot delete movie shows are associated with it" + movie.getTitle());
         }
         movieRepository.deleteById(id);
