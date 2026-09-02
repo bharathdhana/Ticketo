@@ -2,7 +2,6 @@ package com.bharath.ticketo.model;
 
 import com.bharath.ticketo.model.enums.ShowStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,10 +40,5 @@ public class Show {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ShowStatus status;
-
-    @AssertTrue(message = "End time must be after start time")
-    public boolean isEndTimeValid() {
-        return endTime == null || startTime == null || endTime.isAfter(startTime);
-    }
 
 }
