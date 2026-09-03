@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-@Table(name = "reservation_seat")
+@Table(name = "reservation_seat", uniqueConstraints = {@UniqueConstraint(name = "uk_show_seat", columnNames = {"show_id, seat_id"})})
 public class ReservationSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

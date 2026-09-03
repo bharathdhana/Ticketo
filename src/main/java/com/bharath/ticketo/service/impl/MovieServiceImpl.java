@@ -11,6 +11,10 @@ import com.bharath.ticketo.service.CloudinaryService;
 import com.bharath.ticketo.service.MovieService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -99,9 +103,10 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieResponse> searchMovie(String title) {
-        List<Movie> movies = movieRepository.findByTitleContainingIgnoreCase(title);
-        return movies.stream().map(this::mapToMovieResponse).toList();
+    public Page<MovieResponse> searchMovie(String title, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("title").ascending());
+        Page<Movie> movies = movieRepository.findByTitleContainingIgnoreCase(title, pageable);
+        return movies.map(this::mapToMovieResponse);
     }
 
     private MovieResponse mapToMovieResponse(Movie movie) {

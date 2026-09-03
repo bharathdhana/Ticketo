@@ -7,5 +7,5 @@ import com.bharath.ticketo.dto.auth.RegisterRequest;
 public interface AuthService {
     AuthResponse login(LoginRequest request);
     String register(RegisterRequest request);
-    String upgradeRole(Long userId);
+    String upgradeRole(Long id);
 }

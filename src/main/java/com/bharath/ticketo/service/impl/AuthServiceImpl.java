@@ -50,18 +50,18 @@ public class AuthServiceImpl implements AuthService {
                 .email(request.getEmail())
                 .password(encoder.encode(request.getPassword()))
                 .phone(request.getPhone())
-                .role(UserRole.USER)
+                .role(request.getRole())
                 .build();
         userRepository.save(user);
         return "User Registered Successfully";
     }
 
     @Override
-    public String upgradeRole(Long userId) {
-        User user = userRepository.findById(userId)
+    public String upgradeRole(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setRole(UserRole.ADMIN);
         userRepository.save(user);
-        return "Role Upgraded Successfully";
+        return "User Upgraded to Admin";
     }
 }

@@ -3,6 +3,7 @@ package com.bharath.ticketo.service.impl;
 import com.bharath.ticketo.dto.reservation.ReservationRequest;
 import com.bharath.ticketo.dto.reservation.ReservationResponse;
 import com.bharath.ticketo.exception.ResourceNotFoundException;
+import com.bharath.ticketo.exception.SeatAlreadyBookedException;
 import com.bharath.ticketo.model.*;
 import com.bharath.ticketo.model.enums.BookingStatus;
 import com.bharath.ticketo.repository.*;
@@ -75,7 +76,12 @@ public class ReservationServiceImpl implements ReservationService {
             reservationSeat.setReservation(reservation);
             reservationSeat.setSeat(seat);
             reservation.getReservationSeats().add(reservationSeat);
-            reservationSeatRepository.save(reservationSeat);
+
+            try {
+                reservationSeatRepository.save(reservationSeat);
+            }catch (Exception e) {
+                throw new SeatAlreadyBookedException("One of the selected seats is already booked");
+            }
         }
         return mapToReservationResponses(reservation);
     }

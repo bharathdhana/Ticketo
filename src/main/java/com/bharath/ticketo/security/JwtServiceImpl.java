@@ -53,17 +53,25 @@ public class JwtServiceImpl implements JwtService{
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
+        try {
+            return Jwts.parser()
                 .verifyWith(getSigning())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    } catch (Exception e) {
+        throw new JwtValidationException(e.getMessage());
+        }
     }
 
     @Override
     public boolean isValidToken(String token, String username) {
-        String extractedUsername = extractUserEmail(token);
-        return extractedUsername.equals(username) && !isTokenExpired(token);
+        try {
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject().equals(username) && claims.getExpiration().after(new Date());
+    } catch (Exception e) {
+        return false;
+        }
     }
 
     @Override

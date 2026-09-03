@@ -5,6 +5,7 @@ import com.bharath.ticketo.dto.movie.MovieResponse;
 import com.bharath.ticketo.service.MovieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,9 +51,9 @@ public class MovieController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/title/{keyword}")
-    public ResponseEntity<List<MovieResponse>> searchMovie(@PathVariable String keyword) {
-        List<MovieResponse> response = movieService.searchMovie(keyword);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @GetMapping("/search")
+    public ResponseEntity<Page<MovieResponse>> searchMovie(@RequestParam String title, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "0") int size) {
+        Page<MovieResponse> response = movieService.searchMovie(title, page, size);
+        return ResponseEntity.ok(response);
     }
 }
