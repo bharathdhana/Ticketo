@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +24,4 @@ public class ReservationSeat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id", nullable = false)
     private Seat seat;
-
-    private BigDecimal price;
 }

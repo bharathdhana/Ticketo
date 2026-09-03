@@ -47,8 +47,10 @@ public class Reservation {
     protected void onCreate() {
         this.bookedAt = LocalDateTime.now();
         this.bookingNumber = "BKN-" + UUID.randomUUID().toString().substring(0,8).toUpperCase();
+        this.status = BookingStatus.CONFIRMED;
     }
 
+    @Builder.Default
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationSeat> reservationSeats = new ArrayList<>();
 }

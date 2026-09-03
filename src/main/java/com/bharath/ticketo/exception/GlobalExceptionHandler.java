@@ -62,7 +62,7 @@ public class GlobalExceptionHandler extends RuntimeException {
                 .time(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Internal Server Error")
-                .message("An UnExcepted Situation Occurred" + e.getMessage())
+                .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -72,8 +72,8 @@ public class GlobalExceptionHandler extends RuntimeException {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .time(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .error("UnAuthorized")
-                .message("Invalid Email or Password")
+                .error("UnAuthorized, Invalid Email or Password")
+                .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
@@ -83,8 +83,8 @@ public class GlobalExceptionHandler extends RuntimeException {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .time(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .error("Authorized Denied")
-                .message("Not Authorized for Accessing this Endpoints")
+                .error("Authorized Denied, UnAuthorized User")
+                .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler extends RuntimeException {
                 .time(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.CONFLICT.value())
                 .error("Seat Already Booked")
-                .message("Conflicting! Seats Is Already Booked")
+                .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
@@ -105,8 +105,8 @@ public class GlobalExceptionHandler extends RuntimeException {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .time(LocalDateTime.now().toString())
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .error("Invalid Booking")
-                .message("Invalid Booking Exception Occurred")
+                .error("Invalid Booking Exception")
+                .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

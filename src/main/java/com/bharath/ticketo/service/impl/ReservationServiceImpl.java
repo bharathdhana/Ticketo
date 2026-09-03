@@ -13,12 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
@@ -28,6 +27,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final SeatRepository seatRepository;
 
     @Override
+    @Transactional
     public ReservationResponse createReservation(Long userId, ReservationRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -41,11 +41,25 @@ public class ReservationServiceImpl implements ReservationService {
         if(request.getSeatIds().size() != request.getSeatIds().stream().distinct().count())
             throw new IllegalArgumentException("duplicate seats are not allowed");
 
+        List<Seat> seats = new ArrayList<>();
+
+        for(Long seatId : request.getSeatIds()) {
+            Seat seat = seatRepository.findById(seatId)
+                    .orElseThrow(() -> new ResourceNotFoundException(" Seat not found" +  seatId));
+
+            if (!seat.getScreen().getId().equals(show.getScreen().getId()))
+                throw new IllegalArgumentException(" Seat does not belong to this show's screen: ");
+
+            if (reservationSeatRepository.isSeatReserved(show.getId(), seatId))
+                throw new IllegalArgumentException(" Seat is already reserved " + seatId);
+
+            seats.add(seat);
+        }
+
         BigDecimal ticketPrice = BigDecimal.valueOf(show.getTicketPrice());
-        BigDecimal totalAmount = ticketPrice.multiply(BigDecimal.valueOf(request.getSeatIds().size()));
+        BigDecimal totalAmount = ticketPrice.multiply(BigDecimal.valueOf(seats.size()));
 
         Reservation reservation = Reservation.builder()
-                .bookingNumber(generateBookingNumber())
                 .user(user)
                 .show(show)
                 .totalAmount(totalAmount)
@@ -55,18 +69,12 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservationRepository.save(reservation);
 
-        for(Long seatId : request.getSeatIds()) {
-            Seat seat = seatRepository.findById(seatId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Seat not found"));
-
-            if (!seat.getScreen().getId().equals(show.getScreen().getId()))
-                throw new IllegalArgumentException("Seat does not belong to this show's screen: " + seatId);
-
-            if (reservationSeatRepository.existsByReservationShowIdAndSeatId(show.getId(), seatId))
-                throw new IllegalArgumentException("Seat is already reserved" + seatId);
-
+        for(Seat seat : seats) {
             ReservationSeat reservationSeat = new ReservationSeat();
+
+            reservationSeat.setReservation(reservation);
             reservationSeat.setSeat(seat);
+            reservation.getReservationSeats().add(reservationSeat);
             reservationSeatRepository.save(reservationSeat);
         }
         return mapToReservationResponses(reservation);
@@ -101,6 +109,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    @Transactional
     public ReservationResponse cancelReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
@@ -114,6 +123,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    @Transactional
     public String deleteReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
@@ -129,6 +139,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .stream().map(reservationSeat -> reservationSeat.getSeat().getId()).toList();
 
         return ReservationResponse.builder()
+                .id(reservation.getId())
                 .bookingNumber(reservation.getBookingNumber())
                 .userId(reservation.getUser().getId())
                 .showId(reservation.getShow().getId())
@@ -137,12 +148,5 @@ public class ReservationServiceImpl implements ReservationService {
                 .bookedAt(reservation.getBookedAt())
                 .seatIds(seatIds)
                 .build();
-    }
-
-    private String generateBookingNumber() {
-        return "BK-" + UUID.randomUUID()
-                .toString()
-                .substring(0, 8)
-                .toUpperCase();
     }
 }

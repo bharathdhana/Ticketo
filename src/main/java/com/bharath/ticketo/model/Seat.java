@@ -2,6 +2,7 @@ package com.bharath.ticketo.model;
 
 import com.bharath.ticketo.model.enums.SeatType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class Seat {
     private Long id;
 
     @Column(nullable = false)
+    @Pattern(regexp = "[A-Z]", message = "Row number must be an uppercase letter")
     private String seatNumber;
 
     @Column(nullable = false)

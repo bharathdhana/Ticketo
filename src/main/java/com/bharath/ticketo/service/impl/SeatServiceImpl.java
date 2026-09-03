@@ -5,7 +5,7 @@ import com.bharath.ticketo.dto.seat.SeatResponse;
 import com.bharath.ticketo.exception.ResourceNotFoundException;
 import com.bharath.ticketo.model.Screen;
 import com.bharath.ticketo.model.Seat;
-import com.bharath.ticketo.repository.ReservationRepository;
+import com.bharath.ticketo.repository.ReservationSeatRepository;
 import com.bharath.ticketo.repository.ScreenRepository;
 import com.bharath.ticketo.repository.SeatRepository;
 import com.bharath.ticketo.service.SeatService;
@@ -21,7 +21,7 @@ public class SeatServiceImpl implements SeatService {
 
     private final SeatRepository seatRepository;
     private final ScreenRepository screenRepository;
-    private final ReservationRepository reservationRepository;
+    private final ReservationSeatRepository reservationSeatRepository;
 
     @Override
     @Transactional
@@ -89,7 +89,7 @@ public class SeatServiceImpl implements SeatService {
         Seat seat = seatRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Seat not found"));
 
-       boolean hasReservations = reservationRepository.existsBySeatId(seat.getId());
+       boolean hasReservations = reservationSeatRepository.existsBySeatId(id);
        if(hasReservations)
            throw new ResourceNotFoundException("Seat cannot be deleted because it has reservations");
 

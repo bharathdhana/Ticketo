@@ -18,6 +18,6 @@ public class ReservationRequest {
     private Long showId;
 
     @NotNull(message = "Seat IDs are required")
-    @Size(min = 1, message = "At least one seat ID is required")
+    @Size(min = 1, max = 10, message = "can book between 1 and 10 seats")
     private List<@NotNull Long> seatIds;
 }

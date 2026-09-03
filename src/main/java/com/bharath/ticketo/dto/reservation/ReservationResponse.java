@@ -23,6 +23,4 @@ public class ReservationResponse {
     private BookingStatus status;
     private LocalDateTime bookedAt;
     private List<Long> seatIds;
-
-
 }
