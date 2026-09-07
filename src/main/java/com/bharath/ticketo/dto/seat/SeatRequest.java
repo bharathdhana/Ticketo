@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Data
@@ -13,6 +14,7 @@ import lombok.*;
 @Builder
 public class SeatRequest {
     @NotBlank(message = "seat Number is required")
+    @Pattern(regexp = "[A-Z]", message = "Row number must be an uppercase letter")
     private String seatNumber;
 
     @NotNull(message = "row Number is required")
